@@ -1,14 +1,12 @@
 package pe.carlosesp.demo.demorestservice;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.test.context.TestPropertySource;
 import pe.carlosesp.demo.demorestservice.domain.Greeting;
 
@@ -40,6 +38,16 @@ class DemoRestServiceApplicationTests {
     }
 
     @Test
+    public void shouldReturn200WhenSendingRequestWithNameToController() {
+        ResponseEntity<Greeting> entity = this.testRestTemplate.getForEntity(
+                "http://localhost:" + this.port + "/greeting?name=Carlos", Greeting.class);
+
+        assertThat(entity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(entity.getBody().getId()).isNotZero();
+        assertThat(entity.getBody().getContent()).isEqualTo("Hello, Carlos!");
+    }
+
+    @Test
     public void shouldReturn200WhenSendingRequestToActuatorHealthEndpoint() {
         ResponseEntity<Map> entity = this.testRestTemplate.getForEntity(
                 "http://localhost:" + this.mgtPort + "/actuator/health", Map.class);
@@ -55,6 +63,18 @@ class DemoRestServiceApplicationTests {
                 "http://localhost:" + this.mgtPort + "/actuator/beans", Map.class);
 
         assertThat(entity.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+    }
+
+    @Test
+    public void shouldReturn200WhenSendingRequestToActuatorShutdownEndpoint() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> entity = new HttpEntity<>(null, headers);
+
+        ResponseEntity<Map> response = this.testRestTemplate.postForEntity(
+                "http://localhost:" + this.mgtPort + "/actuator/shutdown", entity, Map.class);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 
 }
