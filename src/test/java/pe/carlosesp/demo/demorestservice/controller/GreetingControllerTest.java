@@ -9,6 +9,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
+import org.springframework.restdocs.payload.ResponseFieldsSnippet;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -45,39 +46,45 @@ public class GreetingControllerTest {
     }
 
     @Test
-    public void getGreetingWithoutName_ShouldReturnDefaultGreeting() throws Exception {
+    public void getGreetingWithoutNameShouldReturnDefaultGreeting() throws Exception {
         Greeting greeting = new Greeting(1L, "Hello, World!");
         given(service.getGreeting(anyString())).willReturn(greeting);
 
-        this.mockMvc.perform(get("/greeting").accept(MediaType.APPLICATION_JSON))
+        this.mockMvc.perform(get("/greeting"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(jsonPath("id").exists())
-                .andExpect(jsonPath("content").value("Hello, World!"))
-                .andDo(document("greeting", responseFields(
-                        fieldWithPath("id").description("Id of the request"),
-                        fieldWithPath("content").description("Greeting content")
-                )));
+                .andExpect(jsonPath("id").value(greeting.getId()))
+                .andExpect(jsonPath("content").value(greeting.getContent()))
+                .andDo(document("greeting/{method-name}",
+                        responseFieldsGreeting()
+                ));
     }
 
     @Test
-    public void getGreetingWithName_ShouldReturnGreetingWithName() throws Exception {
+    public void getGreetingWithNameShouldReturnGreetingWithName() throws Exception {
         Greeting greeting = new Greeting(1L, "Hello, Carlos!");
         given(service.getGreeting(anyString())).willReturn(greeting);
 
-        this.mockMvc.perform(get("/greeting").param("name", "Carlos"))
+        this.mockMvc.perform(get("/greeting")
+                .param("name", "Carlos")
+                .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(jsonPath("id").exists())
-                .andExpect(jsonPath("content").value("Hello, Carlos!"))
-                .andDo(document("greeting-param",
+                .andExpect(jsonPath("id").value(greeting.getId()))
+                .andExpect(jsonPath("content").value(greeting.getContent()))
+                .andDo(document("greeting/{method-name}",
                         requestParameters(
                                 parameterWithName("name").description("The name to include in the greeting").optional()
                         ),
-                        responseFields(
-                                fieldWithPath("id").description("Id of the request"),
-                                fieldWithPath("content").description("Greeting content"))
+                        responseFieldsGreeting()
                 ));
+    }
+
+    private ResponseFieldsSnippet responseFieldsGreeting() {
+        return responseFields(
+                fieldWithPath("id").description("Id of the request"),
+                fieldWithPath("content").description("Greeting content")
+        );
     }
 
 }

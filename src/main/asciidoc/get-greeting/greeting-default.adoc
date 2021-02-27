@@ -1,0 +1,2 @@
+=== Default Greeting
+operation::greeting/get-greeting-without-name-should-return-default-greeting[snippets='http-request,http-response,response-fields,curl-request']

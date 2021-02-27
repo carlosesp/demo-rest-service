@@ -69,6 +69,7 @@
                         <configuration>
                             <backend>html</backend>
                             <doctype>book</doctype>
+                            <sourceDocumentName>api-guide.adoc</sourceDocumentName>
                         </configuration>
                     </execution>
                 </executions>

@@ -1,42 +1,17 @@
 = RESTful Web Service API Guide
+Carlos Espíritu;
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 4
+:sectlinks:
+:sectnums:
+
+== Overview
 
 The service tries to adhere as closely as possible to the standard
 HTTP and REST conventions in its use of HTTP verbs.
 
-== Greeting
-
-=== Request
-include::{snippets}/greeting/http-request.adoc[]
-
-=== Response
-include::{snippets}/greeting/http-response.adoc[]
-
-==== Response body
-include::{snippets}/greeting/response-fields.adoc[]
-
-=== cURL
-include::{snippets}/greeting/curl-request.adoc[]
-
-=== HTTPie
-include::{snippets}/greeting/httpie-request.adoc[]
-
-
-== Greeting with parameters
-
-=== Request
-include::{snippets}/greeting-param/http-request.adoc[]
-
-==== Request parameters
-include::{snippets}/greeting-param/request-parameters.adoc[]
-
-=== Response
-include::{snippets}/greeting-param/http-response.adoc[]
-
-==== Response body
-include::{snippets}/greeting-param/response-fields.adoc[]
-
-=== cURL
-include::{snippets}/greeting-param/curl-request.adoc[]
-
-=== HTTPie
-include::{snippets}/greeting-param/httpie-request.adoc[]
+== Examples
+include::get-greeting/index.adoc[]

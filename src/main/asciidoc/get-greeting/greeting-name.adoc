@@ -1,0 +1,2 @@
+=== Greeting with Name
+operation::greeting/get-greeting-with-name-should-return-greeting-with-name[snippets='http-request,request-parameters,http-response,response-fields,curl-request']

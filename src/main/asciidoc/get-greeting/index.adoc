@@ -1,0 +1,3 @@
+
+include::greeting-default.adoc[]
+include::greeting-name.adoc[]
