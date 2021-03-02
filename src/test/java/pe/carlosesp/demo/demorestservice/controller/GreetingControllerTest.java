@@ -9,6 +9,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
+import org.springframework.restdocs.mockmvc.RestDocumentationResultHandler;
 import org.springframework.restdocs.payload.ResponseFieldsSnippet;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -20,6 +21,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
@@ -37,11 +39,18 @@ public class GreetingControllerTest {
     @MockBean
     private GreetingService service;
 
+    private RestDocumentationResultHandler documentationHandler;
+
     @BeforeEach
     public void setUp(WebApplicationContext webApplicationContext,
                       RestDocumentationContextProvider restDocumentation) {
+        this.documentationHandler = document("greeting/{method-name}",
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint()));
+
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
                 .apply(documentationConfiguration(restDocumentation))
+                .alwaysDo(this.documentationHandler)
                 .build();
     }
 
@@ -55,7 +64,7 @@ public class GreetingControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("id").value(greeting.getId()))
                 .andExpect(jsonPath("content").value(greeting.getContent()))
-                .andDo(document("greeting/{method-name}",
+                .andDo(this.documentationHandler.document(
                         responseFieldsGreeting()
                 ));
     }
@@ -66,13 +75,12 @@ public class GreetingControllerTest {
         given(service.getGreeting(anyString())).willReturn(greeting);
 
         this.mockMvc.perform(get("/greeting")
-                .param("name", "Carlos")
-                .accept(MediaType.APPLICATION_JSON))
+                .param("name", "Carlos"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("id").value(greeting.getId()))
                 .andExpect(jsonPath("content").value(greeting.getContent()))
-                .andDo(document("greeting/{method-name}",
+                .andDo(this.documentationHandler.document(
                         requestParameters(
                                 parameterWithName("name").description("The name to include in the greeting").optional()
                         ),
