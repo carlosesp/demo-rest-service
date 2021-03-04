@@ -1,0 +1,2 @@
+include::get-customer.adoc[]
+include::save-customer.adoc[]

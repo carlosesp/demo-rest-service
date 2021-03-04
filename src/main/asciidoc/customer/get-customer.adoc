@@ -1,0 +1,2 @@
+=== Get Customer
+operation::customer/get-all-customers[snippets='http-request,http-response,response-fields,curl-request']
