@@ -1,0 +1,8 @@
+DROP TABLE IF EXISTS customers;
+
+CREATE TABLE customers (
+    id INT(10) NOT NULL AUTO_INCREMENT,
+    firstName VARCHAR(50) NOT NULL,
+    lastName VARCHAR(50) NOT NULL,
+    PRIMARY KEY (id)
+);
