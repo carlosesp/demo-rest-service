@@ -17,17 +17,17 @@ public class CustomerDaoImpl implements CustomerDao {
 
     @Override
     public List<Customer> findAll() {
-        return jdbcTemplate.query("select * from customers",
+        return jdbcTemplate.query("select * from customer",
                 (rs, rowNum) -> new Customer(
                         rs.getLong("id"),
-                        rs.getString("firstName"),
-                        rs.getString("lastName")
+                        rs.getString("first_name"),
+                        rs.getString("last_name")
                 ));
     }
 
     @Override
     public Customer save(Customer customer) {
-        int newCustomerId = jdbcTemplate.update("INSERT INTO customers (firstName, lastName) VALUES(?,?)",
+        int newCustomerId = jdbcTemplate.update("INSERT INTO customer (first_name, last_name) VALUES(?,?)",
                 customer.getFirstName(), customer.getLastName());
         customer.setId(newCustomerId);
         return customer;

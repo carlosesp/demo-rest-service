@@ -1,7 +1,7 @@
 # RESTful Web Service with Spring Boot
 
-Demo project using Spring Boot Web, Spring Boot Actuator and Spring REST Docs, 
-and accessing relational data using JDBC with Spring.
+Demo project using Spring Boot Web, Spring Boot Actuator, Spring REST Docs, 
+and accessing relational data using: JDBC with Spring and Spring Data JPA.
 
 ## Sprint REST Docs
 
