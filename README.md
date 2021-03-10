@@ -3,6 +3,30 @@
 Demo project using Spring Boot Web, Spring Boot Actuator, Spring REST Docs, 
 and accessing relational data using: JDBC with Spring and Spring Data JPA.
 
+## Dockerfile configuration
+- Create simple Dockerfile and run application with user privileges.
+```
+FROM openjdk:8-jdk-alpine
+RUN addgroup -S spring && adduser -S spring -G spring
+USER spring:spring
+ARG JAR_FILE=target/*.jar
+COPY ${JAR_FILE} app.jar
+ENTRYPOINT ["java","-jar","/app.jar"]
+```
+
+- Create layers in container filesystem.
+```
+FROM openjdk:8-jdk-alpine
+RUN addgroup -S spring && adduser -S spring -G spring
+USER spring:spring
+ARG DEPENDENCY=target/dependency
+COPY ${DEPENDENCY}/BOOT-INF/lib /app/lib
+COPY ${DEPENDENCY}/META-INF /app/META-INF
+COPY ${DEPENDENCY}/BOOT-INF/classes /app
+ENTRYPOINT ["java","-cp","app:app/lib/*","pe.carlosesp.demo.demorestservice.DemoRestServiceApplication"]
+```
+
+
 ## Sprint REST Docs
 
 Helps you produce documentation for your RESTful services using Asciidoctor by default. 
