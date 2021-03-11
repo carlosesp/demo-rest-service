@@ -26,6 +26,11 @@ COPY ${DEPENDENCY}/BOOT-INF/classes /app
 ENTRYPOINT ["java","-cp","app:app/lib/*","pe.carlosesp.demo.demorestservice.DemoRestServiceApplication"]
 ```
 
+- Build Docker Image with Maven:
+```
+./mvnw spring-boot:build-image -Dspring-boot.build-image.imageName=carespiritu/demo-rest-service
+```
+
 
 ## Sprint REST Docs
 
