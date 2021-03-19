@@ -30,6 +30,16 @@ class CustomerDaoTest {
     }
 
     @Test
+    void findAById() {
+        Customer customer = customerDao.findById(1L);
+
+        assertThat(customer).isNotNull();
+        assertThat(customer).hasFieldOrPropertyWithValue("id", 1L);
+        assertThat(customer).hasFieldOrPropertyWithValue("firstName", "John");
+        assertThat(customer).hasFieldOrPropertyWithValue("lastName", "Doe");
+    }
+
+    @Test
     void save() {
         Customer customerRequest = new Customer();
         customerRequest.setFirstName("Jane");

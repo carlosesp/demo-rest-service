@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource(properties = {"management.server.port=9090"})
-class DemoRestServiceApplicationTests {
+class GreetingRestServiceIntegrationTest {
 
     @LocalServerPort
     private int port;
@@ -28,11 +28,12 @@ class DemoRestServiceApplicationTests {
     private TestRestTemplate testRestTemplate;
 
     @Test
-    public void shouldReturn200WhenSendingRequestToController() {
+    public void shouldReturn200WhenSendingRequestToGreetingController() {
         ResponseEntity<Greeting> entity = this.testRestTemplate.getForEntity(
                 "http://localhost:" + this.port + "/greeting", Greeting.class);
 
         assertThat(entity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(entity.getBody()).isNotNull();
         assertThat(entity.getBody().getId()).isNotZero();
         assertThat(entity.getBody().getContent()).isEqualTo("Hello, World!");
     }
@@ -43,16 +44,20 @@ class DemoRestServiceApplicationTests {
                 "http://localhost:" + this.port + "/greeting?name=Carlos", Greeting.class);
 
         assertThat(entity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(entity.getBody()).isNotNull();
         assertThat(entity.getBody().getId()).isNotZero();
         assertThat(entity.getBody().getContent()).isEqualTo("Hello, Carlos!");
     }
 
     @Test
     public void shouldReturn200WhenSendingRequestToActuatorHealthEndpoint() {
-        ResponseEntity<Map> entity = this.testRestTemplate.getForEntity(
+        ResponseEntity<Map> entity = this.testRestTemplate
+                .withBasicAuth("endpoint1", "secretendpoint1")
+                .getForEntity(
                 "http://localhost:" + this.mgtPort + "/actuator/health", Map.class);
 
         assertThat(entity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(entity.getBody()).isNotNull();
         assertThat(entity.getBody().get("status")).isEqualTo("UP");
         assertThat(entity.getBody().get("components")).isNotNull();
     }
@@ -71,8 +76,12 @@ class DemoRestServiceApplicationTests {
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> entity = new HttpEntity<>(null, headers);
 
-        ResponseEntity<Map> response = this.testRestTemplate.postForEntity(
-                "http://localhost:" + this.mgtPort + "/actuator/shutdown", entity, Map.class);
+        ResponseEntity<Map> response = this.testRestTemplate
+                .withBasicAuth("endpoint1", "secretendpoint1")
+                .postForEntity(
+                "http://localhost:" + this.mgtPort + "/actuator/shutdown",
+                entity,
+                Map.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }

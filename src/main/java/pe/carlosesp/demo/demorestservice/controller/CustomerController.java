@@ -24,6 +24,12 @@ public class CustomerController {
         return ResponseEntity.ok(customers);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<Customer> getCustomer(@PathVariable Long id) {
+        Customer customer = this.customerService.findById(id);
+        return ResponseEntity.ok(customer);
+    }
+
     @PostMapping
     public ResponseEntity<Customer> saveCustomer(@RequestBody Customer request) {
         Customer savedCustomer = customerService.saveCustomer(request);

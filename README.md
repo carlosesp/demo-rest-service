@@ -1,6 +1,6 @@
 # RESTful Web Service with Spring Boot
 
-Demo project using Spring Boot Web, Spring Boot Actuator, Spring REST Docs, 
+Demo project using Spring Boot Web, Spring Security, Spring Boot Actuator, Spring REST Docs, 
 and accessing relational data using: JDBC with Spring and Spring Data JPA.
 
 ## Dockerfile configuration
@@ -31,6 +31,10 @@ ENTRYPOINT ["java","-cp","app:app/lib/*","pe.carlosesp.demo.demorestservice.Demo
 ./mvnw spring-boot:build-image -Dspring-boot.build-image.imageName=carespiritu/demo-rest-service
 ```
 
+## Spring Security
+
+- Customer endpoints configured with Spring Security: /customers
+- Actuator endpoints Shutdown and Health with Spring Security.
 
 ## Sprint REST Docs
 
